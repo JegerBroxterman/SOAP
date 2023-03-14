@@ -1096,7 +1096,7 @@ class SOParticleData:
         """
         if self.Ngas == 0:
             return None
-        return self.gas_xraylum.sum()
+        return self.gas_xraylum.sum(axis=0)
 
     @lazy_property
     def gas_xrayphlum(self) -> unyt.unyt_array:
@@ -1116,7 +1116,7 @@ class SOParticleData:
         """
         if self.Ngas == 0:
             return None
-        return self.gas_xrayphlum.sum()
+        return self.gas_xrayphlum.sum(axis=0)
 
     @lazy_property
     def gas_compY(self) -> unyt.unyt_array:
@@ -1179,7 +1179,7 @@ class SOParticleData:
         """
         if self.Ngas == 0:
             return None
-        return self.gas_xraylum[self.gas_no_agn].sum()
+        return self.gas_xraylum[self.gas_no_agn].sum(axis=0)
 
     @lazy_property
     def Xrayphlum_no_agn(self) -> unyt.unyt_array:
@@ -1191,7 +1191,7 @@ class SOParticleData:
         """
         if self.Ngas == 0:
             return None
-        return self.gas_xrayphlum[self.gas_no_agn].sum()
+        return self.gas_xrayphlum[self.gas_no_agn].sum(axis=0)
 
     @lazy_property
     def compY_no_agn(self) -> unyt.unyt_quantity:
@@ -1939,6 +1939,7 @@ class SOProperties(HaloProperty):
                     if do_calculation[category]:
                         val = getattr(part_props, name)
                         if val is not None:
+                            assert SO[name].shape == val.shape, f"Attempting to store {name} with wrong dimensions"
                             if unit == "dimensionless":
                                 SO[name] = unyt.unyt_array(
                                     val.astype(dtype),

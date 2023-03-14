@@ -161,8 +161,12 @@ def find_matching_halos(cat1_length, cat1_offset, cat1_ids, cat1_types, host_ind
     cat1_grnr_in_cat2 = (unique_value % (1 << 32)).astype(int)
 
     # Send each (grnr1, grnr2, count) combination to the rank which will store the result for that halo
-    dest = (cat1_grnr_in_cat1 // nr_cat1_per_rank).astype(int)
-    dest[dest>comm_size-1] = comm_size-1
+    if nr_cat1_per_rank > 0:
+        dest = (cat1_grnr_in_cat1 // nr_cat1_per_rank).astype(int)
+        dest[dest>comm_size-1] = comm_size-1
+    else:
+        dest = np.empty_like(cat1_grnr_in_cat1, dtype=int)
+        dest[:] = comm_size - 1
     recv_grnr_in_cat1 = exchange_array(cat1_grnr_in_cat1, dest, comm)
     recv_grnr_in_cat2 = exchange_array(cat1_grnr_in_cat2, dest, comm)
     recv_count        = exchange_array(cat1_count,        dest, comm)
@@ -280,8 +284,9 @@ if __name__ == "__main__":
 
     # Write the output
     def write_output_field(name, data, description):
-        phdf5.collective_write(outfile, name, data, comm)
-        outfile[name].attrs["Description"] = description
+        dataset = phdf5.collective_write(outfile, name, data, comm)
+        dataset.attrs["Description"] = description
+
     message("Writing output")
     with h5py.File(args.output_file, "w", driver="mpio", comm=comm) as outfile:
         # Write input parameters
