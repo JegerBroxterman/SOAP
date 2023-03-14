@@ -49,4 +49,6 @@ lfs setstripe --stripe-count=-1 --stripe-size=32M ${outdir}
 mpirun python3 -u -m mpi4py ./compute_halo_properties.py \
     ${swift_filename} ${scratchdir} ${vr_basename} ${outfile} ${SLURM_ARRAY_TASK_ID} \
     --chunks=${nr_chunks} \
-    --extra-input=${extra_filename}
+    --extra-input=${extra_filename} \
+    --parameters=./parameters/FLAMINGO.yml
+

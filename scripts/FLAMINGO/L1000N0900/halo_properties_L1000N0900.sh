@@ -51,4 +51,6 @@ mpirun python3 -u -m mpi4py ./compute_halo_properties.py \
     ${swift_filename} ${scratchdir} ${vr_basename} ${outfile} ${SLURM_ARRAY_TASK_ID} \
     --chunks=${nr_chunks} \
     --extra-input=${extra_filename} \
-    --max-ranks-reading=128
+    --max-ranks-reading=128 \
+    --parameters=./parameters/FLAMINGO.yml
+
