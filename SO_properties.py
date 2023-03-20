@@ -162,6 +162,7 @@ class SOParticleData:
         input_halo,
         data,
         types_present,
+        xray_calculator,
         recently_heated_gas_filter,
         nu_density,
         observer_position,
@@ -170,6 +171,7 @@ class SOParticleData:
         self.data = data
         self.types_present = types_present
         self.recently_heated_gas_filter = recently_heated_gas_filter
+        self.xray_calculator = xray_calculator
         self.nu_density = nu_density
         self.observer_position = observer_position
         self.compute_basics()
@@ -689,6 +691,9 @@ class SOParticleData:
     def gas_xraylum(self):
         if self.Ngas == 0:
             return None
+            table_name, densities, temperatures, element_mass_fractions, redshift, masses, bands = None, observing_types = None, unit_conversions = None, fill_value = None
+        element_mass_fractions = self.data["PartType0"]["SmoothedElementMassFractions"][self.gas_selection]
+        return self.xray_calculator.interpolate_X_Ray(table_name, self.gas_densities, self.gas_temperatures, self.smoothed_element_mass_fractions, self.gas_masses, bands = ['erosita-low', 'erosita-high', 'ROSAT'], observing_types = ['energies', 'energies', 'energies'], fill_value = 0)
         return self.data["PartType0"]["XrayLuminosities"][self.gas_selection]
 
     @lazy_property
@@ -1135,6 +1140,7 @@ class SOProperties(HaloProperty):
         self,
         cellgrid,
         recently_heated_gas_filter,
+        xray_calculator,
         category_filter,
         SOval,
         type="mean",
@@ -1146,6 +1152,7 @@ class SOProperties(HaloProperty):
         self.type = type
 
         self.filter = recently_heated_gas_filter
+        self.xray_luminosities = xray_calculator
         self.category_filter = category_filter
 
         self.observer_position = cellgrid.observer_position

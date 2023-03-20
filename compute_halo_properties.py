@@ -38,6 +38,7 @@ from combine_chunks import combine_chunks, sub_snapnum
 import projected_aperture_properties
 from recently_heated_gas_filter import RecentlyHeatedGasFilter
 from stellar_age_calculator import StellarAgeCalculator
+from xray_calculator import XrayCalculator
 from category_filter import CategoryFilter
 from mpi_timer import MPITimer
 
@@ -129,6 +130,7 @@ def compute_halo_properties():
         cellgrid, 15.0 * unyt.Myr, 0.0, 0.0
     )
     stellar_age_calculator = StellarAgeCalculator(cellgrid)
+    xray_calculator = XrayCalculator(cellgrid)
     category_filter = CategoryFilter(
         Ngeneral=100, Ngas=100, Ndm=100, Nstar=100, Nbaryon=100, dmo=args.dmo
     )
@@ -154,28 +156,28 @@ def compute_halo_properties():
             bound_only=True,
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 200.0, "mean"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 200.0, "mean"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 50.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 50.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 100.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 100.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 200.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 200.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 500.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 500.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 1000.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 1000.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 2500.0, "crit"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 2500.0, "crit"
         ),
         SO_properties.SOProperties(
-            cellgrid, recently_heated_gas_filter, category_filter, 0.0, "BN98"
+            cellgrid, recently_heated_gas_filter, xray_calculator, category_filter, 0.0, "BN98"
         ),
         SO_properties.RadiusMultipleSOProperties(
             cellgrid,
